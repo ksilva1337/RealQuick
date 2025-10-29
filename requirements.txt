@@ -1,0 +1,4 @@
+# RealQuick Python Requirements
+# For the GUI manager (realquick-manager)
+
+PyQt5>=5.15.0

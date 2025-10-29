@@ -1,0 +1,49 @@
+{
+    "Look Up User by ID": [
+        "sh get-input \"User ID\" 0",
+        "sh process-snippet example-simple-select"
+    ],
+    "Update Configuration Value": [
+        "sh get-input \"Config Name\" 0",
+        "sh get-input \"New Value\" 1",
+        "sh process-snippet example-update-config"
+    ],
+    "Create New Task": [
+        "sh get-input \"Task Title\" 0",
+        "sh get-input \"Description\" 1",
+        "sh get-input \"Status\" 2",
+        "sh process-snippet example-insert-record"
+    ],
+    "Search Orders by Date Range": [
+        "sh date.sh 0",
+        "sh date.sh 1",
+        "sh process-snippet example-date-range"
+    ],
+    "Check Service Status": [
+        "sh get-input \"Service Name\" 0",
+        "sh process-snippet example-bash-command"
+    ],
+    "Git Commit Message": [
+        "sh get-input \"Type (feat/fix/docs)\" 0",
+        "sh get-input \"Description\" 1",
+        "sh process-snippet example-git-commit"
+    ],
+    "Search Logs": [
+        "sh get-input \"Search Pattern\" 0",
+        "sh get-input \"Number of Lines\" 1",
+        "sh process-snippet example-search-logs"
+    ],
+    "Docker Compose Up": [
+        "sh get-input \"Docker Compose File Path\" 0",
+        "sh process-snippet example-docker-compose"
+    ],
+    "User Orders Report": [
+        "sh get-input \"User ID\" 0",
+        "sh process-snippet example-join-query"
+    ],
+    "MySQL Database Backup": [
+        "sh get-input \"MySQL Username\" 0",
+        "sh get-input \"Database Name\" 1",
+        "sh process-snippet example-backup-db"
+    ]
+}

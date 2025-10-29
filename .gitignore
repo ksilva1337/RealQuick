@@ -1,0 +1,42 @@
+# RealQuick .gitignore
+
+# User input files (temporary data)
+inps/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# IDE/Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# OS files
+Thumbs.db
+.directory
+
+# Personal configurations (if users fork and customize)
+# Uncomment these if you want to keep personal configs private:
+# functions.json
+# snips/*
+# themes/*
+
+# Build artifacts
+*.deb
+*.rpm
+dist/
+build/
+
+# Logs
+*.log

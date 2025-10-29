@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Detect script directory (resolve symlinks)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$SCRIPT_DIR/$SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+DPATH="${REALQUICK_HOME:-$SCRIPT_DIR}"
+
+# Input prompt
+prompt="$1"
+
+# Use rofi to display the dmenu for text input
+input_text=$(rofi -dmenu -i -p "$prompt")
+
+# If text is entered, output it
+if [ -n "$input_text" ]; then
+  echo "$input_text"
+  mkdir -p "$DPATH/inps"
+  echo "$input_text" > "$DPATH/inps/$2"
+fi
+
+

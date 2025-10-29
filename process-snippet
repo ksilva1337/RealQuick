@@ -1,0 +1,48 @@
+#!/bin/bash
+
+# Detect script directory (resolve symlinks)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$SCRIPT_DIR/$SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+DPATH="${REALQUICK_HOME:-$SCRIPT_DIR}"
+SNIPS_DIR="$DPATH/snips"
+
+file_name=$1
+shift
+
+if [ -z "$file_name" ]; then
+  echo "Error: No file name provided."
+  exit 1
+fi
+
+snippet_path="$SNIPS_DIR/$file_name"
+
+if [ ! -f "$snippet_path" ]; then
+  echo "Error: File not found."
+  exit 1
+fi
+
+snippet_text=$(cat "$snippet_path")
+
+for i in {0..9}
+do
+	if [[ "$snippet_text" == *"~$i~"* ]]; then
+		snippet_text="${snippet_text//~$i~/$(cat "$DPATH/inps/$i" 2>/dev/null || echo "")}"
+	fi
+done
+
+echo -n "$snippet_text" | wl-copy
+#echo -n type $snippet_text | dotool 
+
+# Add the snippet_text to the clipboard using copyq
+#echo -n "$snippet_text" | copyq add -
+#copyq select 0
+
+#sleep 0.2
+#xdotool type "$snippet_text"
+
+

@@ -1,0 +1,31 @@
+#!/bin/bash
+
+export PATH="$PATH:/usr/local/bin:/usr/bin:/bin"
+# Detect script directory (resolve symlinks)
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do
+  SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$SCRIPT_DIR/$SOURCE"
+done
+SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
+DPATH="${REALQUICK_HOME:-$SCRIPT_DIR}"
+JSON_FILE="$DPATH/functions.json"
+if [ -z "$1" ]; then
+  selected_item=$(jq -r 'keys[]' "$JSON_FILE" | rofi -dmenu -i -p "RealQuick:")
+else
+  selected_item="$1"
+fi
+
+if [ -n "$selected_item" ]; then
+  IFS=$'\n'
+  commands=$(jq -r ".\"$selected_item\"[]" "$JSON_FILE")
+  last_output=""
+  for cmd in $commands; do
+    if [[ $cmd == *"sh process-snippet"* ]]; then
+      cmd="$cmd \"$last_output\""
+    fi
+    cmd="cd $DPATH && $cmd"
+    last_output=$(eval "$cmd")
+  done
+fi
