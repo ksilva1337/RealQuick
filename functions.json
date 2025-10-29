@@ -45,5 +45,8 @@
         "sh get-input \"MySQL Username\" 0",
         "sh get-input \"Database Name\" 1",
         "sh process-snippet example-backup-db"
+    ],
+    "RealQuick Manager": [
+        "python3 realquick-manager"
     ]
 }
