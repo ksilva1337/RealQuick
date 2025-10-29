@@ -53,6 +53,7 @@ sudo apt install rofi jq wl-clipboard python3-pyqt5 zenity
 ### Install RealQuick
 
 ```bash
+git clone https://github.com/ksilva1337/RealQuick.git
 cd RealQuick
 make install-user
 ```
