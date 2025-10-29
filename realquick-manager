@@ -1,0 +1,351 @@
+from operator import index
+
+from PyQt5 import QtCore, uic
+from PyQt5.QtGui import QKeySequence, QFocusEvent
+from PyQt5.QtCore import QStringListModel, QModelIndex
+from PyQt5.QtWidgets import QApplication, QMainWindow, QListView, QPlainTextEdit, QInputDialog, QShortcut, QAbstractItemView
+import json
+import os
+
+
+class rqGUI(QMainWindow):
+
+    def __init__(self):
+        super(rqGUI, self).__init__()
+        self.init_ui()
+        self.init_models()
+        self.init_shortcuts()
+        self.init_listeners()
+        self.init_indices()
+        self.list_snips()
+        self.show()
+
+    def init_ui(self):
+        # Get script directory for relative paths
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        ui_file = os.path.join(script_dir, "realquick-manager.ui")
+        uic.loadUi(ui_file, self)
+        self.CmdLst: QListView
+        self.JSON_FILE = os.path.join(script_dir, "functions.json")
+        self.SNIPS_DIR = os.path.join(script_dir, "snips")
+        self.load_data()
+
+    def init_models(self):
+        self.snip_list_model = QStringListModel()
+        self.snipLst.setModel(self.snip_list_model)
+        self.cmdLstModel = QStringListModel()
+        self.CmdLst.setModel(self.cmdLstModel)
+
+    def init_shortcuts(self):
+        for i in range(10):
+            QShortcut(QKeySequence(f"Ctrl+Alt+{i}"), self, lambda i=i: self.insert_input_text(i))
+
+    def init_listeners(self):
+        self.searchFuncLE.textChanged.connect(self.filter_list)
+        self.searchSnipLE.textChanged.connect(self.filter_snips)
+        self.snipLst.clicked.connect(self.on_snipLst_clicked)
+        self.snipSaveBtn.clicked.connect(self.save_snip)
+        self.snipAddNew.clicked.connect(self.add_new_snip)
+        self.FuncLst.clicked.connect(self.load_commands)
+        self.CmdLst.clicked.connect(self.select_cmd)
+        self.AddQwBtn.clicked.connect(self.add_qw)
+        self.addOtherBtn.clicked.connect(self.add_other)
+        self.AddInpBtn.clicked.connect(self.add_inp)
+        self.AddDateBtn.clicked.connect(self.add_date)
+        self.MoveCmdUP.clicked.connect(self.move_cmd_up)
+        self.MoveCmdDown.clicked.connect(self.move_cmd_down)
+        self.EditBtn.clicked.connect(self.edit_cmd)
+        self.AddFuncBtn.clicked.connect(self.add_new_func)
+        self.CmdDelBtn.clicked.connect(self.del_cmd)
+        self.DelFuncBtn.clicked.connect(self.del_func)
+        self.delSnipBtn.clicked.connect(self.del_snip)
+        self.AddFuncQW.clicked.connect(self.add_func_qw)
+
+    def init_indices(self):
+        self.selSnipInd = None
+        self.selFuncInd = None
+        self.selCmdInd = None
+
+
+    def load_data(self):
+        with open(self.JSON_FILE, 'r') as file:
+            self.data = json.load(file)
+        self.all_items = sorted(list(self.data.keys()), reverse=True)
+        self.func_list_model = QStringListModel()
+        self.func_list_model.setStringList(self.all_items)
+        self.FuncLst.setModel(self.func_list_model)
+
+    def filter_list(self):
+        search_text = self.searchFuncLE.text().lower()
+        filtered_items = [item for item in self.all_items if search_text in item.lower()]
+        self.func_list_model.setStringList(filtered_items)
+
+    def load_commands(self, index: QModelIndex):
+        self.selFuncInd = index
+        selKey = self.func_list_model.data(index, QtCore.Qt.DisplayRole)
+        cmdDic = self.data[selKey]
+        self.cmdLstModel.setStringList(cmdDic)
+
+    def refresh_commands(self):
+        if self.selFuncInd and self.selFuncInd.isValid():
+            func_name = self.func_list_model.data(self.selFuncInd, QtCore.Qt.DisplayRole)
+            with open(self.JSON_FILE, 'r') as file:
+                self.data = json.load(file)
+            cmd_list = self.data.get(func_name, [])
+            self.cmdLstModel.setStringList(cmd_list)
+
+    def select_cmd(self, index: QModelIndex):
+        self.selCmdInd = index
+        cmd_text = self.cmdLstModel.data(index, QtCore.Qt.DisplayRole)
+        if cmd_text.startswith("sh process-snippet "):
+            snip_name = cmd_text[len("sh process-snippet "):].strip()
+            snip_list = self.snip_list_model.stringList()
+            if snip_name in snip_list:
+                snip_index = snip_list.index(snip_name)
+                model_index = self.snip_list_model.index(snip_index)
+                self.snipLst.setCurrentIndex(model_index)
+                self.snipLst.scrollTo(model_index, QAbstractItemView.PositionAtCenter)
+                self.selSnipInd = model_index
+                self.on_snipLst_clicked(model_index)
+
+    def add_new_func(self):
+        funcName, ok = QInputDialog.getText(self, "Function Name", "Enter Function Name:")
+        with open(self.JSON_FILE, 'r') as file:
+            data = json.load(file)
+        data[funcName] = []
+        with open(self.JSON_FILE, "w") as file:
+            json.dump(data, file, indent=4)
+        self.load_data()
+        try:
+            index = self.func_list_model.stringList().index(funcName)
+            model_index = self.func_list_model.index(index)
+            self.FuncLst.setCurrentIndex(model_index)
+            self.FuncLst.scrollTo(model_index, QAbstractItemView.PositionAtCenter)
+            self.selFuncInd = model_index
+            self.load_commands(model_index)
+        except ValueError:
+            pass
+
+
+
+            
+
+    def del_func(self):
+        index = self.selFuncInd
+        if index.isValid():
+            funcName = self.func_list_model.data(index, QtCore.Qt.DisplayRole)
+            with open(self.JSON_FILE, 'r') as file:
+                data = json.load(file)
+            del data[funcName]
+            with open(self.JSON_FILE, "w") as file:
+                json.dump(data, file, indent=4)
+            self.load_data()
+
+    def save_func(self):
+        selindx = self.selFuncInd
+        if selindx.isValid():
+            funcName = self.func_list_model.data(selindx, QtCore.Qt.DisplayRole)
+            cmdList = self.cmdLstModel.stringList()
+            with open(self.JSON_FILE, 'r') as file:
+                data = json.load(file)
+            data[funcName] = cmdList
+            with open(self.JSON_FILE, "w") as file:
+                json.dump(data, file, indent=4)
+            self.load_data()
+
+    def save_func_no_load(self):
+        selindx = self.selFuncInd
+        if selindx.isValid():
+            funcName = self.func_list_model.data(selindx, QtCore.Qt.DisplayRole)
+            cmdList = self.cmdLstModel.stringList()
+            with open(self.JSON_FILE, 'r') as file:
+                data = json.load(file)
+            data[funcName] = cmdList
+            with open(self.JSON_FILE, "w") as file:
+                json.dump(data, file, indent=4)
+
+    def del_cmd(self):
+        index = self.CmdLst.currentIndex()
+        if index.isValid():
+            self.cmdLstModel.removeRow(index.row())
+            self.save_func_no_load()
+            self.refresh_commands()
+
+    def add_qw(self):
+        snipName = ''
+        if len(self.snipLst.selectedIndexes()) > 0:
+            snipName = self.snip_list_model.data(self.snipLst.selectedIndexes()[0], QtCore.Qt.DisplayRole)
+        else:
+            snipName, ok = QInputDialog.getText(self, "Snip Name", "Enter Snip Name:")
+        cmdName = "sh process-snippet " + snipName
+        self.cmdLstModel.insertRow(self.cmdLstModel.rowCount())
+        self.cmdLstModel.setData(self.cmdLstModel.index(self.cmdLstModel.rowCount() - 1), cmdName)
+        self.save_func_no_load()
+        self.refresh_commands()
+
+    def add_inp(self):
+        inpName, ok = QInputDialog.getText(self, "Input Name", "Enter Input Name:")
+        inpNum, ok = QInputDialog.getText(self, "Input Number", "Enter Input Number:")
+        cmdName = 'sh get-input "' + inpName + '" ' + inpNum
+        self.cmdLstModel.insertRow(self.cmdLstModel.rowCount())
+        self.cmdLstModel.setData(self.cmdLstModel.index(self.cmdLstModel.rowCount() - 1), cmdName)
+        self.save_func_no_load()
+        self.refresh_commands()
+
+    def add_date(self):
+        inpNum, ok = QInputDialog.getText(self, "Input Number", "Enter Input Number:")
+        cmdName = 'sh date.sh ' + inpNum
+        self.cmdLstModel.insertRow(self.cmdLstModel.rowCount())
+        self.cmdLstModel.setData(self.cmdLstModel.index(self.cmdLstModel.rowCount() - 1), cmdName)
+        self.save_func_no_load()
+        self.refresh_commands()
+
+    def add_other(self):
+        cmdName, ok = QInputDialog.getText(self, "Command Name", "Enter Command Name:")
+        self.cmdLstModel.insertRow(self.cmdLstModel.rowCount())
+        self.cmdLstModel.setData(self.cmdLstModel.index(self.cmdLstModel.rowCount() - 1), cmdName)
+        self.save_func_no_load()
+        self.refresh_commands()
+
+    def edit_cmd(self):
+        index = self.CmdLst.currentIndex()
+        row = index.row()
+        if row >= 0:
+            current_cmd = self.cmdLstModel.data(index, QtCore.Qt.DisplayRole)
+            new_cmd, ok = QInputDialog.getText(self, "Edit Command", "Edit Command", text=current_cmd)
+            if ok and new_cmd.strip() != "":
+                self.cmdLstModel.setData(index, new_cmd)
+                self.save_func_no_load()
+
+    def move_cmd_up(self):
+        index = self.CmdLst.currentIndex()
+        row = index.row()
+        if row > 0:
+            new_index = self.cmdLstModel.index(row - 1)
+            commands = self.cmdLstModel.stringList()
+            commands[row - 1], commands[row] = commands[row], commands[row - 1]
+            self.cmdLstModel.setStringList(commands)
+            self.CmdLst.setCurrentIndex(self.cmdLstModel.index(row - 1))
+            self.CmdLst.setFocus()
+            self.CmdLst.scrollTo(new_index, QAbstractItemView.PositionAtCenter)
+            self.CmdLst.repaint()
+            self.save_func_no_load()
+
+    def move_cmd_down(self):
+        index = self.CmdLst.currentIndex()
+        row = index.row()
+        commands = self.cmdLstModel.stringList()
+        if row < len(commands) - 1:
+            new_index = self.cmdLstModel.index(row + 1)
+            commands[row + 1], commands[row] = commands[row], commands[row + 1]
+            self.cmdLstModel.setStringList(commands)
+            self.CmdLst.setCurrentIndex(self.cmdLstModel.index(row + 1))
+            self.CmdLst.setFocus()
+            self.CmdLst.scrollTo(new_index, QAbstractItemView.PositionAtCenter)
+            self.CmdLst.repaint()
+            self.save_func_no_load()
+
+    def list_snips(self):
+        if os.path.exists(self.SNIPS_DIR):
+            snip_files = [f for f in os.listdir(self.SNIPS_DIR) if os.path.isfile(os.path.join(self.SNIPS_DIR, f))]
+            self.snip_list_model.setStringList(snip_files)
+        else:
+            self.snip_list_model.setStringList([])
+
+    def filter_snips(self):
+        search = self.searchSnipLE.text().lower()
+        if os.path.exists(self.SNIPS_DIR):
+            all_snips = [f for f in os.listdir(self.SNIPS_DIR) if os.path.isfile(os.path.join(self.SNIPS_DIR, f))]
+            filter_snips = [itm for itm in all_snips if search in itm.lower()]
+            self.snip_list_model.setStringList(filter_snips)
+        else:
+            self.snip_list_model.setStringList([])
+
+    def on_snipLst_clicked(self, index: QModelIndex):
+        self.selSnipInd = index
+        selected_snip = self.snip_list_model.data(index, QtCore.Qt.DisplayRole)
+        snip_file = os.path.join(self.SNIPS_DIR, selected_snip)
+        with open(snip_file, "r") as f:
+            snip_content = f.read()
+        self.snipTxtBx.setPlainText(snip_content)
+
+    def save_snip(self):
+        selected_snip = self.snip_list_model.data(self.selSnipInd, QtCore.Qt.DisplayRole)
+        snip_file = os.path.join(self.SNIPS_DIR, selected_snip)
+        with open(snip_file, "w") as f:
+            f.write(self.snipTxtBx.toPlainText())
+
+    def add_new_snip(self):
+        sname, ok = QInputDialog.getText(self, "Name", "Enter new snip name:")
+        if ok and sname:
+            os.makedirs(self.SNIPS_DIR, exist_ok=True)
+            sfile = os.path.join(self.SNIPS_DIR, sname)
+            with open(sfile, "w") as f:
+                f.write("")
+            self.list_snips()
+
+
+    def del_snip(self):
+        selected_snip = self.snip_list_model.data(self.selSnipInd, QtCore.Qt.DisplayRole)
+        snip_file = os.path.join(self.SNIPS_DIR, selected_snip)
+        os.remove(snip_file)
+        self.list_snips()
+
+    def insert_input_text(self, number: int):
+        self.snipTxtBx.insertPlainText(f"~{number}~")
+
+    def add_func_qw(self):
+        func_name, ok1 = QInputDialog.getText(self, "Function Name", "Enter Function Name:")
+        if ok1:
+            snip_name, ok2 = QInputDialog.getText(self, "Snippet Name", "Enter Snippet Name:")
+            if ok2:
+                snip_text, ok3 = QInputDialog.getMultiLineText(self, "Snippet Text", "Enter Snippet Text:")
+                if ok3:
+                    # Create new function and snippet
+                    self.create_function(func_name)
+                    self.create_snippet(snip_name, snip_text)
+                    self.add_qw_with_snip(func_name, snip_name)
+
+    def create_function(self, func_name):
+        with open(self.JSON_FILE, 'r') as file:
+            data = json.load(file)
+        data[func_name] = []
+        with open(self.JSON_FILE, "w") as file:
+            json.dump(data, file, indent=4)
+        #self.load_data()
+
+    def create_snippet(self, snip_name, snip_text):
+        os.makedirs(self.SNIPS_DIR, exist_ok=True)
+        snip_file = os.path.join(self.SNIPS_DIR, snip_name)
+        with open(snip_file, "w") as f:
+            f.write(snip_text)
+        self.list_snips()
+
+    def add_qw_with_snip(self, func_name, snip_name):
+        cmdName = "sh process-snippet " + snip_name
+        with open(self.JSON_FILE, 'r') as file:
+            data = json.load(file)
+        data[func_name].append(cmdName)
+        with open(self.JSON_FILE, "w") as file:
+            json.dump(data, file, indent=4)
+        self.load_data()
+        try:
+            index = self.func_list_model.stringList().index(func_name)
+            model_index = self.func_list_model.index(index)
+            self.FuncLst.setCurrentIndex(model_index)
+            self.FuncLst.scrollTo(model_index, QAbstractItemView.PositionAtCenter)
+            self.selFuncInd = model_index
+            self.load_commands(model_index)
+        except ValueError:
+            pass
+
+
+
+def main():
+    app = QApplication([])
+    window = rqGUI()
+    app.exec()
+
+
+if __name__ == '__main__':
+    main()
