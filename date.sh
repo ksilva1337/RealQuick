@@ -1,11 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Detect script directory (resolve symlinks)
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do
+# Detect script directory (resolve symlinks) - portable version
+if [ -n "${BASH_SOURCE:-}" ]; then
+  SOURCE="${BASH_SOURCE[0]}"
+else
+  SOURCE="$0"
+fi
+
+# Resolve symlinks
+while [ -L "$SOURCE" ]; do
   SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
   SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$SCRIPT_DIR/$SOURCE"
+  case "$SOURCE" in
+    /*) ;;
+    *) SOURCE="$SCRIPT_DIR/$SOURCE" ;;
+  esac
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 DPATH="${REALQUICK_HOME:-$SCRIPT_DIR}"
