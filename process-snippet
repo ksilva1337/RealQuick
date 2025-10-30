@@ -1,11 +1,20 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Detect script directory (resolve symlinks)
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do
+# Detect script directory (resolve symlinks) - portable version
+if [ -n "${BASH_SOURCE:-}" ]; then
+  SOURCE="${BASH_SOURCE[0]}"
+else
+  SOURCE="$0"
+fi
+
+# Resolve symlinks
+while [ -L "$SOURCE" ]; do
   SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
   SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$SCRIPT_DIR/$SOURCE"
+  case "$SOURCE" in
+    /*) ;;
+    *) SOURCE="$SCRIPT_DIR/$SOURCE" ;;
+  esac
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 DPATH="${REALQUICK_HOME:-$SCRIPT_DIR}"
@@ -28,17 +37,24 @@ fi
 
 snippet_text=$(cat "$snippet_path")
 
-for i in {0..9}
+for i in 0 1 2 3 4 5 6 7 8 9
 do
-	if [[ "$snippet_text" == *"~$i~"* ]]; then
-		snippet_text="${snippet_text//~$i~/$(cat "$DPATH/inps/$i" 2>/dev/null || echo "")}"
-	fi
+	case "$snippet_text" in
+		*"~$i~"*)
+			if [ -f "$DPATH/inps/$i" ]; then
+				replacement=$(cat "$DPATH/inps/$i")
+			else
+				replacement=""
+			fi
+			snippet_text=$(echo "$snippet_text" | sed "s|~$i~|$replacement|g")
+			;;
+	esac
 done
 
-if [[ $(echo $XDG_SESSION_TYPE) == "wayland" ]]; then
+if [ "${XDG_SESSION_TYPE:-}" = "wayland" ]; then
   echo -n "$snippet_text" | wl-copy
 else
-  echo -n "$snippet_text" | x-copy
+  echo -n "$snippet_text" | xclip -selection clipboard 2>/dev/null || echo -n "$snippet_text" | xsel --clipboard
 fi
 
 #echo -n type $snippet_text | dotool 

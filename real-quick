@@ -1,12 +1,21 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 export PATH="$PATH:/usr/local/bin:/usr/bin:/bin"
-# Detect script directory (resolve symlinks)
-SOURCE="${BASH_SOURCE[0]}"
-while [ -h "$SOURCE" ]; do
+# Detect script directory (resolve symlinks) - portable version
+if [ -n "${BASH_SOURCE:-}" ]; then
+  SOURCE="${BASH_SOURCE[0]}"
+else
+  SOURCE="$0"
+fi
+
+# Resolve symlinks
+while [ -L "$SOURCE" ]; do
   SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
   SOURCE="$(readlink "$SOURCE")"
-  [[ $SOURCE != /* ]] && SOURCE="$SCRIPT_DIR/$SOURCE"
+  case "$SOURCE" in
+    /*) ;;
+    *) SOURCE="$SCRIPT_DIR/$SOURCE" ;;
+  esac
 done
 SCRIPT_DIR="$(cd -P "$(dirname "$SOURCE")" && pwd)"
 DPATH="${REALQUICK_HOME:-$SCRIPT_DIR}"
@@ -18,13 +27,16 @@ else
 fi
 
 if [ -n "$selected_item" ]; then
-  IFS=$'\n'
+  IFS='
+'
   commands=$(jq -r ".\"$selected_item\"[]" "$JSON_FILE")
   last_output=""
   for cmd in $commands; do
-    if [[ $cmd == *"sh process-snippet"* ]]; then
-      cmd="$cmd \"$last_output\""
-    fi
+    case "$cmd" in
+      *"sh process-snippet"*)
+        cmd="$cmd \"$last_output\""
+        ;;
+    esac
     cmd="cd $DPATH && $cmd"
     last_output=$(eval "$cmd")
   done
