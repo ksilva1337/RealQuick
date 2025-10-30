@@ -35,7 +35,12 @@ do
 	fi
 done
 
-echo -n "$snippet_text" | wl-copy
+if [[ $(echo $XDG_SESSION_TYPE) == "wayland" ]]; then
+  echo -n "$snippet_text" | wl-copy
+else
+  echo -n "$snippet_text" | x-copy
+fi
+
 #echo -n type $snippet_text | dotool 
 
 # Add the snippet_text to the clipboard using copyq
