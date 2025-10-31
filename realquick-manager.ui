@@ -15,6 +15,9 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QListView" name="FuncLst">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -22,6 +25,9 @@
       <width>441</width>
       <height>451</height>
      </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -89,8 +95,8 @@
    <widget class="QPushButton" name="AddFuncBtn">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>20</y>
+      <x>220</x>
+      <y>60</y>
       <width>101</width>
       <height>41</height>
      </rect>
@@ -113,6 +119,9 @@
     </property>
    </widget>
    <widget class="QListView" name="snipLst">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>460</x>
@@ -120,6 +129,9 @@
       <width>201</width>
       <height>681</height>
      </rect>
+    </property>
+    <property name="editTriggers">
+     <set>QAbstractItemView::NoEditTriggers</set>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
@@ -210,7 +222,7 @@
    <widget class="QPushButton" name="DelFuncBtn">
     <property name="geometry">
      <rect>
-      <x>210</x>
+      <x>340</x>
       <y>60</y>
       <width>101</width>
       <height>41</height>
@@ -236,10 +248,10 @@
    <widget class="QPushButton" name="AddFuncQW">
     <property name="geometry">
      <rect>
-      <x>320</x>
-      <y>30</y>
-      <width>131</width>
-      <height>71</height>
+      <x>220</x>
+      <y>20</y>
+      <width>101</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -301,47 +313,54 @@
    <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
-      <x>140</x>
-      <y>570</y>
-      <width>281</width>
-      <height>41</height>
+      <x>130</x>
+      <y>560</y>
+      <width>331</width>
+      <height>71</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="AddQwBtn">
        <property name="text">
-        <string>Add QW</string>
+        <string>Snip Clip</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="AddInpBtn">
        <property name="text">
-        <string>Add Inp</string>
+        <string>InpBox</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="AddDateBtn">
+       <property name="text">
+        <string>Date Picker</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="addOtherBtn">
        <property name="text">
-        <string>Add Other</string>
+        <string>Custom Cmd</string>
        </property>
       </widget>
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="AddDateBtn">
+   <widget class="QPushButton" name="EditFuncBtn">
     <property name="geometry">
      <rect>
-      <x>330</x>
-      <y>610</y>
-      <width>91</width>
-      <height>25</height>
+      <x>340</x>
+      <y>20</y>
+      <width>101</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>Add Date</string>
+     <string>Edit</string>
     </property>
    </widget>
   </widget>
