@@ -6,6 +6,8 @@ from PyQt5.QtCore import QStringListModel, QModelIndex
 from PyQt5.QtWidgets import QApplication, QMainWindow, QListView, QPlainTextEdit, QInputDialog, QShortcut, QAbstractItemView
 import json
 import os
+import re
+import random
 
 
 class rqGUI(QMainWindow):
@@ -82,6 +84,7 @@ class rqGUI(QMainWindow):
 
     def load_commands(self, index: QModelIndex):
         self.selFuncInd = index
+        self.refresh_commands()
         selKey = self.func_list_model.data(index, QtCore.Qt.DisplayRole)
         cmdDic = self.data[selKey]
         self.cmdLstModel.setStringList(cmdDic)
@@ -297,14 +300,14 @@ class rqGUI(QMainWindow):
     def add_func_qw(self):
         func_name, ok1 = QInputDialog.getText(self, "Function Name", "Enter Function Name:")
         if ok1:
-            snip_name, ok2 = QInputDialog.getText(self, "Snippet Name", "Enter Snippet Name:")
-            if ok2:
-                snip_text, ok3 = QInputDialog.getMultiLineText(self, "Snippet Text", "Enter Snippet Text:")
-                if ok3:
-                    # Create new function and snippet
-                    self.create_function(func_name)
-                    self.create_snippet(snip_name, snip_text)
-                    self.add_qw_with_snip(func_name, snip_name)
+            snip_name = re.sub(r'[^a-zA-Z0-9]', '', func_name)[0:15] + str(random.randint(1,1000))
+            #snip_name, ok2 = QInputDialog.getText(self, "Snippet Name", "Enter Snippet Name:")
+            snip_text, ok2 = QInputDialog.getMultiLineText(self, "Snippet Text", "Enter Snippet Text:")
+        if ok2:
+            # Create new function and snippet
+            self.create_function(func_name)
+            self.create_snippet(snip_name, snip_text)
+            self.add_qw_with_snip(func_name, snip_name)
 
     def create_function(self, func_name):
         with open(self.JSON_FILE, 'r') as file:
