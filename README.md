@@ -31,7 +31,7 @@ Perfect for:
 ### Prerequisites
 
 **Required:**
-- Linux (tested on Arch Linux)
+- Linux (tested on Arch and Kali/Debian)
 - [rofi](https://github.com/davatorium/rofi) - Application launcher
 - `jq` - JSON processor
 - `wl-clipboard` (Wayland) or `xclip` (X11) - Clipboard management
@@ -45,9 +45,9 @@ Perfect for:
 sudo pacman -S rofi jq wl-clipboard python-pyqt5 zenity
 ```
 
-**Install dependencies (Debian/Ubuntu):**
+**Install dependencies (Debian/Ubuntu/Kali):**
 ```bash
-sudo apt install rofi jq wl-clipboard python3-pyqt5 zenity
+sudo apt install rofi jq wl-clipboard python3-pyqt5 zenity xclip
 ```
 
 ### Install RealQuick
@@ -55,16 +55,10 @@ sudo apt install rofi jq wl-clipboard python3-pyqt5 zenity
 ```bash
 git clone https://github.com/ksilva1337/RealQuick.git
 cd RealQuick
-make install-user
+sudo make install
 ```
 
-This installs to `~/.config/realquick` and creates symlinks in `~/.local/bin`.
-
-Make sure `~/.local/bin` is in your PATH:
-```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
-```
+That's it! Executables are installed to `/usr/local/bin` (already in PATH) and your personal config is created at `~/.config/realquick`.
 
 ### Set Up Hotkey
 
@@ -345,10 +339,11 @@ Commands run sequentially. Use this for complex workflows:
 ## Uninstallation
 
 ```bash
-make uninstall-user
+cd RealQuick
+sudo make uninstall
 ```
 
-To remove configuration:
+To also remove your personal configuration:
 ```bash
 rm -rf ~/.config/realquick
 ```
