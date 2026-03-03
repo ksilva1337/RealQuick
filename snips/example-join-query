@@ -1,0 +1,4 @@
+SELECT u.username, o.order_date, o.total
+FROM users u
+JOIN orders o ON u.id = o.user_id
+WHERE u.id = ~0~;

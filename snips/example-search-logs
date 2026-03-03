@@ -1,0 +1,1 @@
+grep -r "~0~" /var/log/ | tail -n ~1~
