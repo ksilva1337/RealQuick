@@ -16,7 +16,7 @@ __pycache__/
 *.swo
 *~
 .DS_Store
-
+CLAUDE.md
 # Backup files
 *.bak
 *.backup
