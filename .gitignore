@@ -28,8 +28,8 @@ Thumbs.db
 
 # Personal configurations (if users fork and customize)
 # Uncomment these if you want to keep personal configs private:
-# functions.json
-# snips/*
+functions.json
+snips/*
 # themes/*
 
 # Build artifacts
