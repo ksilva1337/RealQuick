@@ -1,52 +1,401 @@
 {
-    "Look Up User by ID": [
-        "sh get-input \"User ID\" 0",
-        "sh process-snippet example-simple-select"
+    "Reset Password 9999999": [
+        "sh process-snippet resetPass"
     ],
-    "Update Configuration Value": [
-        "sh get-input \"Config Name\" 0",
-        "sh get-input \"New Value\" 1",
-        "sh process-snippet example-update-config"
+    "JJ Backup Databases DBs ALL bka": [
+        "sh process-snippet backDbAll"
     ],
-    "Create New Task": [
-        "sh get-input \"Task Title\" 0",
-        "sh get-input \"Description\" 1",
-        "sh get-input \"Status\" 2",
-        "sh process-snippet example-insert-record"
+    "Backup Databases DBs M&P No MX bkm": [
+        "sh process-snippet backDbNoMx"
     ],
-    "Search Orders by Date Range": [
+    "Backup Databases DBs PDQPOS Only bkp": [
+        "sh process-snippet backDbPdqpos"
+    ],
+    "Reboot Self Shutdown": [
+        "sh process-snippet reboot"
+    ],
+    "Enterprise Schedule Pull": [
+        "sh process-snippet entPull"
+    ],
+    "Open Buisness Day Today DOB": [
+        "sh process-snippet openDOB"
+    ],
+    "Close Buisness Day DOB": [
+        "sh process-snippet closeDOB"
+    ],
+    "Open Buisness Day Tomorrow DOB": [
+        "sh process-snippet openTDOB"
+    ],
+    "JJ Basket Sync OLO Pricing Update": [
+        "sh process-snippet updatePricing"
+    ],
+    "Manual Confirm Order Tip": [
+        "sh get-input \"Order ID's\" 0",
+        "sh process-snippet confirmOrder"
+    ],
+    "Manual Void Order": [
+        "sh get-input \"Order ID's\" 0",
+        "sh process-snippet voidOrder"
+    ],
+    "JJ Combo Delivery Fee Charching Double": [
+        "sh process-snippet combodel"
+    ],
+    "Where OptName Like": [
+        "sh get-input \"OptName\" 0",
+        "sh process-snippet whereOptName"
+    ],
+    "Previous Days Order and Payments": [
+        "sh date.sh 0",
+        "sh get-input \"Order ID's\" 1",
+        "sh process-snippet arcOrder"
+    ],
+    "Closing End of Day": [
+        "sh process-snippet endOfDay"
+    ],
+    "Disable Authorized Time Punches": [
+        "sh process-snippet authTime"
+    ],
+    "Select From Config Main tblConfigMain": [
+        "sh get-input \"OptName\" 0",
+        "sh process-snippet selCfgMain"
+    ],
+    "Menu Item Add": [
+        "sh process-snippet menuItemAdd"
+    ],
+    "Search Entire DB": [
+        "sh get-input \"Search Word\" 0",
+        "sh process-snippet searchDB"
+    ],
+    "Drive Thru Log": [
+        "sh get-input \"Order ID's\" 0",
+        "sh process-snippet driveThru"
+    ],
+    "Order and Payment Info Today": [
+        "sh get-input \"Order ID's\" 0",
+        "sh process-snippet orderInfo"
+    ],
+    "Enable Mapping Map On": [
+        "sh process-snippet mapOn"
+    ],
+    "Enable InShop and Pickup Tips No Deduct": [
+        "sh process-snippet tipInshopPicND"
+    ],
+    "Deduct Tips False Cashier Report": [
+        "sh process-snippet deductTipsFalse"
+    ],
+    "JJ Leveling Script": [
+        "sh process-snippet JJlevel"
+    ],
+    "Copy PDQ BG VF from server": [
+        "sh process-snippet copyPdqBgVf"
+    ],
+    "rq Manager rqManage": [
+        "python3 rqManage.py"
+    ],
+    "Call Board Start cbr": [
+        "systemctl --user start cb"
+    ],
+    "Call Board Stop cbk": [
+        "systemctl --user stop cb"
+    ],
+    "Disable Void Promo Reason": [
+        "sh process-snippet disVPReason"
+    ],
+    "Menu Change Report": [
+        "sh process-snippet menuChange"
+    ],
+    "Changes Will Take Effect cte": [
+        "sh process-snippet changeEffect"
+    ],
+    "Disabble Tax Delivery Fee": [
+        "sh process-snippet taxDelOff"
+    ],
+    "Lil Lunch Upcharge": [
+        "sh process-snippet lilLunch"
+    ],
+    "Wrap Box price for wraps": [
+        "sh process-snippet wrapBox"
+    ],
+    "": [],
+    "Map Lookup Addres Geocodes - mpu": [
+        "sh get-input \"Address number\" 0",
+        "sh get-input \"Address Street\" 1",
+        "sh process-snippet mapLookup"
+    ],
+    "GeoCode Fix Mapping - gcf": [
+        "sh geoCodes.sh 2 3",
+        "sh process-snippet geoCode"
+    ],
+    "JJ Level Half Lil John": [
+        "sh process-snippet halfLilJ"
+    ],
+    "Phone Log - Caller ID": [
+        "sh process-snippet phoneLog"
+    ],
+    "Disable UserAuthentication - Station Setup": [
+        "sh get-input \"IP Address (last Number)\" 0",
+        "sh process-snippet userAuthOff"
+    ],
+    "Conversion Settings": [
+        "sh get-input \"Acting Server\" 0",
+        "sh process-snippet conversionSettings"
+    ],
+    "Disable In-Shop and Pickup Tips": [
+        "sh process-snippet disTips"
+    ],
+    "COO confirm check MIDs": [
+        "sh process-snippet midsStoreID"
+    ],
+    "Accidental Z out": [
+        "sh process-snippet revZOut"
+    ],
+    "Red Velvet Upcharge": [
+        "sh process-snippet redVelvet"
+    ],
+    "JJ Firecracker Combo": [
+        "sh process-snippet fireracker"
+    ],
+    "JJ CC Combo": [
+        "sh process-snippet cCombo"
+    ],
+    "Mileage Change Report": [
         "sh date.sh 0",
         "sh date.sh 1",
-        "sh process-snippet example-date-range"
+        "sh process-snippet mileChange"
     ],
-    "Check Service Status": [
-        "sh get-input \"Service Name\" 0",
-        "sh process-snippet example-bash-command"
+    "Disable 3PF": [
+        "sh process-snippet disable3pf"
     ],
-    "Git Commit Message": [
-        "sh get-input \"Type (feat/fix/docs)\" 0",
-        "sh get-input \"Description\" 1",
-        "sh process-snippet example-git-commit"
+    "JJ Price4 Fix": [
+        "sh process-snippet jjprice4"
     ],
-    "Search Logs": [
-        "sh get-input \"Search Pattern\" 0",
-        "sh get-input \"Number of Lines\" 1",
-        "sh process-snippet example-search-logs"
+    "JJ GrubHub Auto Assign": [
+        "sh process-snippet jjGrubHub"
     ],
-    "Docker Compose Up": [
-        "sh get-input \"Docker Compose File Path\" 0",
-        "sh process-snippet example-docker-compose"
+    "Master Script": [
+        "sh process-snippet master"
     ],
-    "User Orders Report": [
-        "sh get-input \"User ID\" 0",
-        "sh process-snippet example-join-query"
+    "JJ OH\\CA Combo Drinks": [
+        "sh process-snippet comboDrinks"
     ],
-    "MySQL Database Backup": [
-        "sh get-input \"MySQL Username\" 0",
-        "sh get-input \"Database Name\" 1",
-        "sh process-snippet example-backup-db"
+    "JJ Menu Copy": [
+        "sh process-snippet menuCopy"
     ],
-    "RealQuick Manager": [
-        "python3 realquick-manager"
+    "JJ GH Auto Assign": [
+        "sh process-snippet ghAssign"
+    ],
+    "GH Enable and Update": [
+        "sh process-snippet ghEnable"
+    ],
+    "Restart SQL": [
+        "sh process-snippet restartSQL"
+    ],
+    "PDQ DB Util": [
+        "sh process-snippet dbutil"
+    ],
+    "Bomgar Remote Install": [
+        "sh process-snippet bomgarInstall"
+    ],
+    "DoorDash Assign": [
+        "sh process-snippet ddAssign"
+    ],
+    "Check DB Version": [
+        "sh process-snippet dbVersion"
+    ],
+    "Map Activate": [
+        "sh process-snippet mapActivate"
+    ],
+    "JJ Box Lunch Fix 102924": [
+        "sh process-snippet jjboxlunch"
+    ],
+    "JJ Combo Mustard": [
+        "sh process-snippet comboMustard"
+    ],
+    "Enable Rewards Lookup": [
+        "sh process-snippet rewardLookup"
+    ],
+    "JJ Coo 3PF": [
+        "sh process-snippet jjCoo"
+    ],
+    "Drawer Bank Report": [
+        "sh process-snippet drawerBank"
+    ],
+    "Uber Bearer Token": [
+        "sh process-snippet ueToken"
+    ],
+    "JJ DoorDash Auto Assign": [
+        "sh process-snippet ddAutoAssign"
+    ],
+    "Menu Price Report": [
+        "sh process-snippet menuReport"
+    ],
+    "Toggle DOB day open close": [
+        "sh process-snippet toggleDOB"
+    ],
+    "House Account Invoice Date": [
+        "sh date.sh 0",
+        "sh date.sh 1",
+        "sh process-snippet HAInvoice"
+    ],
+    "SQL tblTimeClock by Date": [
+        "sh date.sh 0",
+        "sh process-snippet sqlTimeClock"
+    ],
+    "JJF March Menu": [
+        "sh process-snippet jjfMarch"
+    ],
+    "JJ Remove Happy Hour": [
+        "sh process-snippet remHH"
+    ],
+    "JJ Discount Removal": [
+        "sh process-snippet discountRem"
+    ],
+    "Mapping Activation": [
+        "sh process-snippet mapActive"
+    ],
+    "JJ Add Parm": [
+        "sh process-snippet jjaddParm"
+    ],
+    "Job Code Add": [
+        "sh get-input \"Job Code\" 0",
+        "sh get-input \"Job Description\" 1",
+        "sh process-snippet addJobCode"
+    ],
+    "JJ THC Button": [
+        "sh process-snippet jjTHCbtn"
+    ],
+    "JJ Remove KRC RVC": [
+        "sh process-snippet jjRemKrc"
+    ],
+    "JJ Reverse THC Box": [
+        "sh process-snippet jjRevThc"
+    ],
+    "JJ Mod Print Order": [
+        "sh process-snippet jjmodprint"
+    ],
+    "Menu Level Add": [
+        "sh process-snippet levelAdd"
+    ],
+    "JJ Compare Tax Del Fee": [
+        "sh process-snippet jjCompareTax"
+    ],
+    "Enable Staff Manager": [
+        "sh process-snippet enableStaff"
+    ],
+    "Uber 3PF Sub Org": [
+        "sh process-snippet uberSubOrg"
+    ],
+    "Price increase Percent": [
+        "sh process-snippet priceIncrease"
+    ],
+    "JJ Lemon Sunshine Highight CMD": [
+        "sh process-snippet jjLemonHL"
+    ],
+    "JJ Extra Chicken Level Fix": [
+        "sh process-snippet jjXtraChicken"
+    ],
+    "Reset Password CMD": [
+        "sh process-snippet resetCmd"
+    ],
+    "JJ CT Crunchtime Enable Edit": [
+        "sh process-snippet ctEnableEdit"
+    ],
+    "JJ CT Crunchtime Disable Edit": [
+        "sh process-snippet ctDisableEdit"
+    ],
+    "JJ FISERV Void": [
+        "sh get-input \"Order ID\" 1",
+        "sh process-snippet fiservVoid"
+    ],
+    "M&P User and Pass": [
+        "sh qk.sh mnpuserpass"
+    ],
+    "JJ Basket Sync with Levels": [
+        "sh process-snippet syncLevels"
+    ],
+    "JJ Toasted Double Charge": [
+        "sh process-snippet toastedDouble"
+    ],
+    "JJ FISERV Void Previous Day": [
+        "sh date.sh 0",
+        "sh get-input \"Order ID\" 1",
+        "sh process-snippet fiservVoidPrev"
+    ],
+    "FISERV Add Tip Previous Day": [
+        "sh date.sh 0",
+        "sh get-input \"Order ID\" 1",
+        "sh get-input \"Tip Amount\" 2",
+        "sh process-snippet fiservTipPrev"
+    ],
+    "Duplicate CC payments": [
+        "sh process-snippet dupCC"
+    ],
+    "JJ Punpkin Cheesecake": [
+        "sh process-snippet jjPumpkin"
+    ],
+    "JJ Lemon Fix": [
+        "sh process-snippet jjLemonFix"
+    ],
+    "Test Fake CC": [
+        "sh process-snippet testCC"
+    ],
+    "JJ Menu Copy Basic PDQPOS2": [
+        "sh process-snippet jjcopy2"
+    ],
+    "Mount Clrday as pdqpos2": [
+        "sh process-snippet jjclrday"
+    ],
+    "JJ Enable Enterprise and Sync": [
+        "sh process-snippet jjentperprise"
+    ],
+    "JJ Remove Lemon Cookie": [
+        "sh process-snippet jjLemonRem"
+    ],
+    "Set Surcharge Joes": [
+        "sh process-snippet joesSurcharge"
+    ],
+    "JJ Pizza Sub Button": [
+        "sh process-snippet jjPizza"
+    ],
+    "Notify Type": [
+        "sh list.sh NotifyList 0",
+        "sh qk.sh NotifyType"
+    ],
+    "Notify Store Closed - ncc": [
+        "sh qk.sh notifyClosed"
+    ],
+    "Notify Store Offline - nof": [
+        "sh qk.sh notifyOffline"
+    ],
+    "Common Functions": [
+        "sh list.sh commonTest 0",
+        "sh run.sh $(cat $HOME/scripts/rq/inps/0)"
+    ],
+    "JJ Sicilian Description": [
+        "sh process-snippet jjsicilian"
+    ],
+    "Make it CMD - sqlcmd": [
+        "sh cb2get-input 0",
+        "sed ':a;N;$!ba;s/\\n/;/g' inps/0 > inps/1",
+        "sh process-snippet sqlcmd"
+    ],
+    "JJ Ohio and Cali Alt Tax": [
+        "sh process-snippet jjcaohTax"
+    ],
+    "JJ OLO Sync All": [
+        "sh process-snippet jjSyncAll"
+    ],
+    "SP CustomerSale - Top customers report": [
+        "sh process-snippet topCust"
+    ],
+    "CC Payment Info Previous Day": [
+        "sh date.sh 0",
+        "sh process-snippet ccPaymentInfo"
+    ],
+    "All Orders Today": [
+        "sh process-snippet allOrders"
+    ],
+    "JJ Picklewich button": [
+        "sh process-snippet picklewich"
     ]
 }
